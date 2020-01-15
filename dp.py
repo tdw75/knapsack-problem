@@ -1,11 +1,5 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-from collections import namedtuple
 import numpy as np
 from problem_setup import parse_input_data, output_solution
-
-Item = namedtuple("Item", ['index', 'value', 'weight'])
 
 
 def dynamic_program(items, capacity):
@@ -46,10 +40,15 @@ if __name__ == '__main__':
     import sys
 
     if len(sys.argv) > 1:
+
         file_location = sys.argv[1].strip()
         with open(file_location, 'r') as input_data_file:
             input_data = input_data_file.read()
-        # print(solve_it(input_data))
+
+        items, capacity = parse_input_data(input_data)
+        decision_variables, obj_value = dynamic_program(items, capacity)
+        print(output_solution(decision_variables, obj_value))
+
     else:
         print(
-            'This test requires an input file.  Please select one from the data directory. (i.e. python solver.py ./data/ks_4_0)')
+            'This test requires an input file.  Please select one from the data directory. (i.e. python dp.py ./data/ks_4_0)')
