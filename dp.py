@@ -2,7 +2,7 @@ import numpy as np
 from problem_setup import parse_input_data, output_solution
 
 
-def dynamic_program(items, capacity):
+def dp_solver(items, capacity):
     dp_table = {}
     n = len(items)
     columns = n + 1
@@ -36,6 +36,15 @@ def dynamic_program(items, capacity):
     return decision_variables, obj_value
 
 
+def solve_it(input_data):
+
+    items, capacity = parse_input_data(input_data)
+    decision_variables, obj_value = dp_solver(items, capacity)
+    output_data = output_solution(decision_variables, obj_value, optimal=True)
+
+    return output_data
+
+
 if __name__ == '__main__':
     import sys
 
@@ -45,9 +54,7 @@ if __name__ == '__main__':
         with open(file_location, 'r') as input_data_file:
             input_data = input_data_file.read()
 
-        items, capacity = parse_input_data(input_data)
-        decision_variables, obj_value = dynamic_program(items, capacity)
-        print(output_solution(decision_variables, obj_value))
+        print(solve_it(input_data))
 
     else:
         print(
