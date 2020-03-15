@@ -1,5 +1,5 @@
 import numpy as np
-from problem_setup import parse_input_data, output_solution
+from src.problem_setup import parse_input_data, output_solution
 
 
 def dp_solver(items, capacity):

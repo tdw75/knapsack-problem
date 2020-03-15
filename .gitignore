@@ -1,7 +1,8 @@
-/Knapsack_Practice.ipynb
+/knapsack_practice.ipynb
 /submit.py
-/handout.pdf
-/greedy_default.py
-/_coursera
+/resources/handout.pdf
+/src/greedy_default.py
+/resources/_coursera
 /.ipynb_checkpoints/
 /solver.py
+/.idea/
