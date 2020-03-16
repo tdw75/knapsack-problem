@@ -1,7 +1,8 @@
 from collections import namedtuple
+from typing import List, Tuple
 
 
-def parse_input_data(input_data):
+def parse_input_data(input_data) -> Tuple[List[namedtuple], int]:
     Item = namedtuple("Item", ['index', 'value', 'weight', 'density'])
     lines = input_data.split('\n')
 
