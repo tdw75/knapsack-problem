@@ -1,3 +1,4 @@
+import time
 from typing import List, Tuple
 
 from src.problem_setup import parse_input_data
@@ -11,50 +12,102 @@ class BranchAndBound:
         self.decision_variables = None
         self.obj_value = None
 
-    def relaxed_solution(self, fixed_vars: dict = None) -> List[int]:
-        decision_variables = [None] * self.n
-        if fixed_vars:
-            for k, v in fixed_vars.items():
-                decision_variables[k] = v
+    def relaxed_solution(self, fixed_variables: list = None) -> List[int]:
 
-        items = self.sorted_items
+        decision_variables = fixed_variables.copy()
+        items_stack = [item for item in self.sorted_items if decision_variables[item.index] is None]
         remaining_capacity = self.capacity - sum(
             [self.items[idx].weight for idx in range(self.n) if decision_variables[idx] == 1])
 
-        for item in items:
-            if not decision_variables[item.index]:
-                if item.weight <= remaining_capacity:
-                    decision_variables[item.index] = 1
-                    items.remove(item)
-                    remaining_capacity -= item.weight
+        if remaining_capacity < 0:
+            return []
+        if not items_stack:
+            return decision_variables
+
+        for item in items_stack:
+            # if not decision_variables[item.index]:
+            if item.weight <= remaining_capacity:
+                decision_variables[item.index] = 1
+                remaining_capacity -= item.weight
+            else:
+                decision_variables[item.index] = remaining_capacity / item.weight
+                break
 
         decision_variables = [x if x else 0 for x in decision_variables]
 
-        part_item = items[0]
-        take = remaining_capacity / part_item.weight
-        decision_variables[part_item.index] = take
-
         return decision_variables
 
-    def branch(self, index: int, stack: list) -> List[Tuple[int, int]]:
-        options = [(index, 1), (index, 0)]
-        stack += options
+    @staticmethod
+    def branch(index: int) -> List[Tuple[int, int]]:
+        options = [(index, 0), (index, 1)]
+        return options
 
-        return stack
-
-    def feasible(self, decision_variables: list) -> bool:
+    def feasible(self, decision_variables: List[int]) -> bool:
         weight = sum([self.items[idx].weight for idx in range(self.n) if decision_variables[idx] == 1])
         if weight <= self.capacity:
             return True
         else:
             return False
 
-    def check_optimality(self, current_best: float, decision_variables: list) -> bool:
-        value = sum([self.items[idx].value for idx in range(self.n) if decision_variables[idx] == 1])
+    @staticmethod
+    def valid(decision_variables: List[int]) -> bool:
+        for var in decision_variables:
+            if 0 < 1 - var < 1:
+                return False
+        return True
+
+    def calculate_objective_value(self, decision_variables: List[int]) -> bool:
+        return sum([self.items[idx].value for idx in range(self.n) if decision_variables[idx] == 1])
+
+    def best_so_far(self, current_best: int, decision_variables: List[int]) -> bool:
+        value = self.calculate_objective_value(decision_variables)
         if value > current_best:
             return True
         else:
             return False
 
-    def search(self):
-        pass
+    def solve(self):
+        best_obj = 0
+        best_config = [0] * self.n
+        current_idx = 0
+        current_config = [None] * self.n
+        stack = [(-1, 'placeholder')]
+        stack += self.branch(0)
+        next_up = stack.pop(-1)
+
+        while stack:
+            current_config[next_up[0]] = next_up[1]
+            candidate_solution = self.relaxed_solution(current_config)
+
+            if not candidate_solution:  # infeasible
+                next_up = stack.pop(-1)
+
+            elif self.feasible(candidate_solution) and not self.valid(candidate_solution):
+                current_idx += 1
+                if current_idx >= self.n:
+                    current_idx = stack[-1][0]
+                    continue
+                stack += self.branch(current_idx)
+                next_up = stack.pop(-1)
+
+            elif self.valid(candidate_solution):
+                current_idx = stack[-1][0]
+                current_config = current_config[:current_idx] + [None] * (self.n - current_idx)
+                next_up = stack.pop(-1)
+                if self.best_so_far(best_obj, candidate_solution):
+                    best_config = candidate_solution
+                    best_obj = self.calculate_objective_value(best_config)
+
+        return best_config, best_obj
+
+
+if __name__ == "__main__":
+    start = time.time()
+    with open('..\data\ks_30_0', 'r') as file:
+        input_data = file.read()
+
+    bnb = BranchAndBound(input_data)
+    configuration, obj = bnb.solve()
+    print(obj)
+
+    print("execution time = {:.1f} seconds".format(time.time() - start))
