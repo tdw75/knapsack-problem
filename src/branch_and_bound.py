@@ -16,8 +16,7 @@ class BranchAndBound:
 
         decision_variables = fixed_variables.copy()
         items_stack = [item for item in self.sorted_items if decision_variables[item.index] is None]
-        remaining_capacity = self.capacity - sum(
-            [self.items[idx].weight for idx in range(self.n) if decision_variables[idx] == 1])
+        remaining_capacity = self.capacity - self.calculate_knapsack_weight(decision_variables)
 
         if remaining_capacity < 0:
             return []
@@ -43,7 +42,7 @@ class BranchAndBound:
         return options
 
     def feasible(self, decision_variables: List[int]) -> bool:
-        weight = sum([self.items[idx].weight for idx in range(self.n) if decision_variables[idx] == 1])
+        weight = self.calculate_knapsack_weight(decision_variables)
         if weight <= self.capacity:
             return True
         else:
@@ -58,6 +57,9 @@ class BranchAndBound:
 
     def calculate_objective_value(self, decision_variables: List[int]) -> bool:
         return sum([self.items[idx].value for idx in range(self.n) if decision_variables[idx] == 1])
+
+    def calculate_knapsack_weight(self, decision_variables):
+        return sum([self.items[idx].weight for idx in range(self.n) if decision_variables[idx] == 1])
 
     def best_so_far(self, current_best: int, decision_variables: List[int]) -> bool:
         value = self.calculate_objective_value(decision_variables)
@@ -98,7 +100,12 @@ class BranchAndBound:
                     best_config = candidate_solution
                     best_obj = self.calculate_objective_value(best_config)
 
-        return best_config, best_obj
+        item_indices = [item.index for item in self.items if best_config[item.index] == 1]
+        solution = [0] * self.n
+        for idx in item_indices:
+            solution[idx] = 1
+
+        return solution, best_obj
 
 
 if __name__ == "__main__":
@@ -108,6 +115,6 @@ if __name__ == "__main__":
 
     bnb = BranchAndBound(input_data)
     configuration, obj = bnb.solve()
-    print(obj)
 
+    print("best solution found was {}".format(obj))
     print("execution time = {:.1f} seconds".format(time.time() - start))
