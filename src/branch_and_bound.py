@@ -15,7 +15,8 @@ class BranchAndBound:
     def relaxed_solution(self, fixed_variables: list = None) -> List[int]:
 
         decision_variables = fixed_variables.copy()
-        items_stack = [item for item in self.sorted_items if decision_variables[item.index] is None]
+        items_stack = [self.sorted_items[idx] for idx in range(self.n) if
+                       decision_variables[self.sorted_items[idx].index] is None]
         remaining_capacity = self.capacity - self.calculate_knapsack_weight(decision_variables)
 
         if remaining_capacity < 0:
@@ -100,6 +101,7 @@ class BranchAndBound:
                     best_config = candidate_solution
                     best_obj = self.calculate_objective_value(best_config)
 
+        # item_indices = [item.index for item in self.items if best_config[item.index] == 1]
         item_indices = [item.index for item in self.items if best_config[item.index] == 1]
         solution = [0] * self.n
         for idx in item_indices:
