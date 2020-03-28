@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 from src.problem_setup import parse_input_data, output_solution
 
@@ -46,16 +48,11 @@ def solve_it(input_data):
 
 
 if __name__ == '__main__':
-    import sys
+    start = time.time()
+    with open('..\data\ks_30_0', 'r') as file:
+        input_data = file.read()
 
-    if len(sys.argv) > 1:
+    items, capacity = parse_input_data(input_data)
+    decision_variables, obj_value = dp_solver(items, capacity)
 
-        file_location = sys.argv[1].strip()
-        with open(file_location, 'r') as input_data_file:
-            input_data = input_data_file.read()
-
-        print(solve_it(input_data))
-
-    else:
-        print(
-            'This test requires an input file.  Please select one from the data directory. (i.e. python dp.py ./data/ks_4_0)')
+    print("execution time = {:.1f} seconds".format(time.time() - start))
