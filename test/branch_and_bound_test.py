@@ -6,23 +6,23 @@ from branch_and_bound import BranchAndBound
 class TestBranchAndBound(TestCase):
 
     def setUp(self) -> None:
-        with open('resources\data\ks_4_0', 'r') as file:
+        with open('resources\data\ks_4_0_test', 'r') as file:
             self.input_data_4 = file.read()
-        with open('resources\data\ks_30_0', 'r') as file:
+        with open('resources\data\ks_30_0_test', 'r') as file:
             self.input_data_30 = file.read()
 
     def test_that_relaxed_solution_with_no_variables_fixed_is_correctly_calculated(self):
         bnb = BranchAndBound(self.input_data_4)
         fixed_vars = [None, None, None, None]
         solution = bnb.relaxed_solution(fixed_variables=fixed_vars)
-        expected_solution = [0, 1, 1, 2 / 8]
+        expected_solution = [1, 1, 2 / 8, 0]
         self.assertListEqual(expected_solution, solution)
 
     def test_that_relaxed_solution_with_some_variables_fixed_is_correctly_calculated(self):
         bnb = BranchAndBound(self.input_data_4)
-        fixed_vars = [None, 1, 0, None]
+        fixed_vars = [1, 0, None, None]
         solution = bnb.relaxed_solution(fixed_variables=fixed_vars)
-        expected_solution = [0, 1, 0, 7 / 8]
+        expected_solution = [1, 0, 7 / 8, 0]
         self.assertListEqual(expected_solution, solution)
 
     def test_that_relaxed_solution_with_all_variables_fixed_is_correctly_calculated(self):
@@ -63,7 +63,7 @@ class TestBranchAndBound(TestCase):
 
     def test_that_objective_function_value_is_correctly_calculated(self):
         bnb = BranchAndBound(self.input_data_4)
-        solution = [1, 0, 0, 1]
+        solution = [0, 0, 1, 1]
         value = bnb.calculate_objective_value(solution)
         expected = 19
         self.assertEqual(expected, value)
@@ -72,14 +72,14 @@ class TestBranchAndBound(TestCase):
         bnb = BranchAndBound(self.input_data_4)
         knapsack = [0, 1, 1, None]
         weight = bnb.calculate_knapsack_weight(knapsack)
-        self.assertEqual(weight, 9)
+        self.assertEqual(13, weight)
 
     def test_that_optimal_solution_is_found(self):
         bnb = BranchAndBound(self.input_data_4)
         solution, obj = bnb.solve()
         expected_solution = [1, 0, 0, 1]
-        self.assertListEqual(expected_solution, solution)
         self.assertEqual(19, obj)
+        self.assertListEqual(expected_solution, solution)
 
     def test_that_optimal_solution_is_found_large(self):
         bnb = BranchAndBound(self.input_data_30)
