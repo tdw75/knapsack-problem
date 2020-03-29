@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from branch_and_bound import BranchAndBound
+import numpy as np
 
 
 class TestBranchAndBound(TestCase):
@@ -13,65 +14,65 @@ class TestBranchAndBound(TestCase):
 
     def test_that_relaxed_solution_with_no_variables_fixed_is_correctly_calculated(self):
         bnb = BranchAndBound(self.input_data_4)
-        fixed_vars = [None, None, None, None]
-        solution = bnb.relaxed_solution(fixed_variables=fixed_vars)
+        fixed_vars = [np.nan, np.nan, np.nan, np.nan]
+        solution = bnb.relaxed_solution(fixed_variables=np.array(fixed_vars))
         expected_solution = [1, 1, 2 / 8, 0]
-        self.assertListEqual(expected_solution, solution)
+        self.assertListEqual(expected_solution, list(solution))
 
     def test_that_relaxed_solution_with_some_variables_fixed_is_correctly_calculated(self):
         bnb = BranchAndBound(self.input_data_4)
-        fixed_vars = [1, 0, None, None]
-        solution = bnb.relaxed_solution(fixed_variables=fixed_vars)
+        fixed_vars = [1, 0, np.nan, np.nan]
+        solution = bnb.relaxed_solution(fixed_variables=np.array(fixed_vars))
         expected_solution = [1, 0, 7 / 8, 0]
-        self.assertListEqual(expected_solution, solution)
+        self.assertEqual(expected_solution, list(solution))
 
     def test_that_relaxed_solution_with_all_variables_fixed_is_correctly_calculated(self):
         bnb = BranchAndBound(self.input_data_4)
         fixed_vars = [1, 1, 0, 0]
-        solution = bnb.relaxed_solution(fixed_variables=fixed_vars)
-        self.assertListEqual(fixed_vars, solution)
+        solution = bnb.relaxed_solution(fixed_variables=np.array(fixed_vars))
+        self.assertListEqual(fixed_vars, list(solution))
 
-    def test_that_infeasible_solution_returns_empty_list(self):
+    def test_that_infeasible_solution_returns_empty_array(self):
         bnb = BranchAndBound(self.input_data_4)
         fixed_vars = [1, 1, 0, 1]
-        solution = bnb.relaxed_solution(fixed_variables=fixed_vars)
-        self.assertListEqual([], solution)
+        solution = bnb.relaxed_solution(fixed_variables=np.array(fixed_vars))
+        self.assertListEqual([], list(solution))
 
     def test_that_feasible_solution_is_returned(self):
         bnb = BranchAndBound(self.input_data_4)
         feasible_solution = [1, 0, 0, 1]
-        result = bnb.feasible(feasible_solution)
+        result = bnb.feasible(np.array(feasible_solution))
         self.assertEqual(result, True)
 
     def test_that_infeasible_solution_is_identified(self):
         bnb = BranchAndBound(self.input_data_4)
         infeasible_solution = [1, 1, 1, 0]
-        result = bnb.feasible(infeasible_solution)
+        result = bnb.feasible(np.array(infeasible_solution))
         self.assertEqual(result, False)
 
     def test_that_invalid_solution_is_identified(self):
         bnb = BranchAndBound(self.input_data_4)
         invalid_solution = [1, 0.25, 1, 0]
-        result = bnb.valid(invalid_solution)
+        result = bnb.valid(np.array(invalid_solution))
         self.assertEqual(result, False)
 
     def test_that_valid_solution_is_identified(self):
         bnb = BranchAndBound(self.input_data_4)
         valid_solution = [1, 1, 0, 0]
-        result = bnb.valid(valid_solution)
+        result = bnb.valid(np.array(valid_solution))
         self.assertEqual(result, True)
 
     def test_that_objective_function_value_is_correctly_calculated(self):
         bnb = BranchAndBound(self.input_data_4)
         solution = [0, 0, 1, 1]
-        value = bnb.calculate_objective_value(solution)
+        value = bnb.calculate_objective_value(np.array(solution))
         expected = 19
         self.assertEqual(expected, value)
 
     def test_that_knapsack_weight_is_correctly_calculated(self):
         bnb = BranchAndBound(self.input_data_4)
-        knapsack = [0, 1, 1, None]
-        weight = bnb.calculate_knapsack_weight(knapsack)
+        knapsack = [0, 1, 1, np.nan]
+        weight = bnb.calculate_knapsack_weight(np.array(knapsack))
         self.assertEqual(13, weight)
 
     def test_that_optimal_solution_is_found(self):
