@@ -7,9 +7,9 @@ import numpy as np
 class TestBranchAndBound(TestCase):
 
     def setUp(self) -> None:
-        with open('resources\data\ks_4_0_test', 'r') as file:
+        with open('data\ks_4_0_test', 'r') as file:
             self.input_data_4 = file.read()
-        with open('resources\data\ks_30_0_test', 'r') as file:
+        with open('data\ks_30_0_test', 'r') as file:
             self.input_data_30 = file.read()
 
     def test_that_relaxed_solution_with_no_variables_fixed_is_correctly_calculated(self):

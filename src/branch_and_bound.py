@@ -7,10 +7,9 @@ from src.problem_setup import parse_input_data
 
 
 class BranchAndBound:
-    def __init__(self, input_data, search_strategy='best_first'):
+    def __init__(self, input_data):
         self.items, self.capacity = parse_input_data(input_data)
         self.n = len(self.items)
-        self.strategy = search_strategy
         self.ranked_items = np.array(sorted(self.items, key=lambda x: x.density, reverse=True))
         self.ranked_indices = self.ranked_items[:, 0]
         self.ranked_values = self.ranked_items[:, 1]
@@ -99,6 +98,7 @@ class BranchAndBound:
 
             # infeasible solution
             if candidate_solution.size == 0:
+                current_idx, current_config = self.bound(stack, current_config)
                 next_up = stack.pop(-1)
 
             # feasible but invalid solution
@@ -134,6 +134,5 @@ if __name__ == "__main__":
     bnb = BranchAndBound(input_data)
     configuration, obj = bnb.solve()
 
-    print(configuration)
     print("best solution found was {}".format(obj))
     print("execution time = {:.2f} seconds".format(time.time() - start))

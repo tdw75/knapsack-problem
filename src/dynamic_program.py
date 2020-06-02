@@ -13,11 +13,9 @@ def dp_solver(items, capacity):
         dp_table[i] = [0] * (capacity + 1)
 
     for col in range(1, columns):
-
         j = col - 1
 
         for k in range(capacity + 1):
-
             if items[j].weight <= k:
                 dp_table[col][k] = max(dp_table[col - 1][k], items[j].value + dp_table[col - 1][k - items[j].weight])
             else:
@@ -38,21 +36,13 @@ def dp_solver(items, capacity):
     return decision_variables, obj_value
 
 
-def solve_it(input_data):
-
-    items, capacity = parse_input_data(input_data)
-    decision_variables, obj_value = dp_solver(items, capacity)
-    output_data = output_solution(decision_variables, obj_value, optimal=True)
-
-    return output_data
-
-
 if __name__ == '__main__':
     start = time.time()
-    with open('..\data\ks_30_0', 'r') as file:
+    with open('..\data\ks_1000_0', 'r') as file:
         input_data = file.read()
 
     items, capacity = parse_input_data(input_data)
-    decision_variables, obj_value = dp_solver(items, capacity)
+    solution, obj = dp_solver(items, capacity)
 
+    print("best solution found was {}".format(obj))
     print("execution time = {:.1f} seconds".format(time.time() - start))

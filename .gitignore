@@ -1,8 +1,8 @@
 /knapsack_practice.ipynb
 /submit.py
-/resources/handout.pdf
+/resources/*
 /src/greedy_default.py
-/resources/_coursera
+/_coursera
 /.ipynb_checkpoints/
 /solver.py
 /.idea/
