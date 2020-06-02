@@ -1,7 +1,8 @@
 import time
 
 import numpy as np
-from src.problem_setup import parse_input_data, output_solution
+
+from knapsack.problem_setup import parse_input_data
 
 
 def dp_solver(items, capacity):

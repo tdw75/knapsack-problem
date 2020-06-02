@@ -1,7 +1,7 @@
 /knapsack_practice.ipynb
 /submit.py
 /resources/*
-/src/greedy_default.py
+/knapsack/greedy_default.py
 /_coursera
 /.ipynb_checkpoints/
 /solver.py

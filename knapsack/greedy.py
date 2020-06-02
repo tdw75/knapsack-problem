@@ -1,5 +1,5 @@
 from collections import namedtuple
-from src.problem_setup import parse_input_data, output_solution
+from knapsack.problem_setup import parse_input_data, output_solution
 
 Item = namedtuple("Item", ['index', 'value', 'weight', 'density'])
 

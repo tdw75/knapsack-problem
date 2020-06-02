@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from src.problem_setup import parse_input_data
+from knapsack.problem_setup import parse_input_data
 
 
 class BranchAndBound:
